@@ -1,0 +1,55 @@
+{
+  "name": "rx-datascript",
+  "version": "0.0.1",
+  "description": "Bridge between rx and datascript",
+  "keywords": [
+      "rx",
+      "datascript"
+  ],
+  "author": "Andrei Melnikov <parabellum06-94@yandex.ru>",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/typeetfunc/rx-datascript"
+  },
+  "bugs": {
+    "mail": "parabellum06-94@yandex.ru",
+    "url": "http://github.com/typeetfunc/rx-datascript/issues"
+  },
+  "dependencies": {
+    "rxjs": "~5.0.0-beta.1",
+    "datascript-mori": "~0.15.3"
+  },
+  "devDependencies": {
+    "eslint-config-cycle": "~3.1.0",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-preset-stage-1": "^6.5.0",
+    "babel-preset-stage-2": "^6.5.0",
+    "babel-core": "~6.5.0",
+    "babel-eslint": "~v5.0.0",
+    "babel-loader": "~6.2.0",
+    "babel-plugin-transform-runtime": "~6.1.18",
+    "eslint": "~1.10.1",
+    "rimraf": "^2.3.4",
+    "webpack": "^1.9.6",
+    "webpack-dev-server": "^1.8.2"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "clean": "rimraf lib dist",
+    "build": "babel src --out-dir lib",
+    "build:umd_dev": "webpack src/index.js dist/rx-datascript.js",
+    "build:umd": "webpack src/index.js dist/rx-datascript.js && NODE_ENV=production webpack src/index.js dist/rx-datascript.min.js",
+    "lint": "eslint src",
+    "prepublish": "npm run lint && npm run clean && npm run build && npm run build:umd"
+  },
+  "engines": {
+    "node": ">=0.8.22"
+  },
+  "licenses": [
+    {
+      "type": "EPL",
+      "url": "https://github.com/typeetfunc/rx-datascript/blob/master/LICENSE"
+    }
+  ]
+}
