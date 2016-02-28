@@ -1,6 +1,6 @@
 {
   "name": "rx-datascript",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Bridge between rx and datascript",
   "keywords": [
       "rx",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "rxjs": "~5.0.0-beta.1",
-    "datascript-mori": "~0.15.3"
+    "datascript-mori": "0.15.7"
   },
   "devDependencies": {
     "eslint-config-cycle": "~3.1.0",
@@ -28,20 +28,24 @@
     "babel-core": "~6.5.0",
     "babel-eslint": "~v5.0.0",
     "babel-loader": "~6.2.0",
+    "babel-register": "^6.3.13",
     "babel-plugin-transform-runtime": "~6.1.18",
     "eslint": "~1.10.1",
+    "chai": "~3.5.0",
     "rimraf": "^2.3.4",
-    "webpack": "^1.9.6",
-    "webpack-dev-server": "^1.8.2"
+    "mocha": "^2.3.4",
+    "webpack": "^1.9.6"
   },
   "main": "lib/index.js",
   "scripts": {
-    "clean": "rimraf lib dist",
-    "build": "babel src --out-dir lib",
+    "clean": "rimraf dist",
     "build:umd_dev": "webpack src/index.js dist/rx-datascript.js",
+    "watch_example:umd": "webpack examples/index.js dist/example.js --watch --devtool eval",
     "build:umd": "webpack src/index.js dist/rx-datascript.js && NODE_ENV=production webpack src/index.js dist/rx-datascript.min.js",
     "lint": "eslint src",
-    "prepublish": "npm run lint && npm run clean && npm run build && npm run build:umd"
+    "test": "mocha --compilers js:babel-register",
+    "test:watch": "NODE_ENV=test mocha --watch",
+    "prepublish": "npm run lint && npm run clean && npm run build:umd"
   },
   "engines": {
     "node": ">=0.8.22"
