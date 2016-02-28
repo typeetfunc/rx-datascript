@@ -2,15 +2,26 @@
   "name": "rx-datascript",
   "version": "0.0.0",
   "description": "Bridge between rx and datascript",
-  "keywords": [
-      "rx",
-      "datascript"
-  ],
-  "author": "Andrei Melnikov <parabellum06-94@yandex.ru>",
+  "main": "lib/index.js",
+  "scripts": {
+    "clean": "rimraf lib dist",
+    "build": "babel src --out-dir lib",
+    "build:umd": "webpack src/index.js dist/rx-datascript.js && NODE_ENV=production webpack src/index.js dist/rx-datascript.min.js",
+    "lint": "eslint src",
+    "test": "mocha --compilers js:babel-register",
+    "test:watch": "NODE_ENV=test mocha --watch",
+    "prepublish": "npm run lint && npm run test && npm run clean && npm run build && npm run build:umd"
+  },
   "repository": {
     "type": "git",
     "url": "http://github.com/typeetfunc/rx-datascript"
   },
+  "keywords": [
+      "rx",
+      "datascript",
+      "mori"
+  ],
+  "author": "Andrei Melnikov <parabellum06-94@yandex.ru>",  
   "bugs": {
     "mail": "parabellum06-94@yandex.ru",
     "url": "http://github.com/typeetfunc/rx-datascript/issues"
@@ -29,26 +40,13 @@
     "babel-eslint": "~v5.0.0",
     "babel-loader": "~6.2.0",
     "babel-register": "^6.3.13",
+    "babel-cli": "~6.5.0",
     "babel-plugin-transform-runtime": "~6.1.18",
     "eslint": "~1.10.1",
     "chai": "~3.5.0",
     "rimraf": "^2.3.4",
     "mocha": "^2.3.4",
     "webpack": "^1.9.6"
-  },
-  "main": "lib/index.js",
-  "scripts": {
-    "clean": "rimraf dist",
-    "build:umd_dev": "webpack src/index.js dist/rx-datascript.js",
-    "watch_example:umd": "webpack examples/index.js dist/example.js --watch --devtool eval",
-    "build:umd": "webpack src/index.js dist/rx-datascript.js && NODE_ENV=production webpack src/index.js dist/rx-datascript.min.js",
-    "lint": "eslint src",
-    "test": "mocha --compilers js:babel-register",
-    "test:watch": "NODE_ENV=test mocha --watch",
-    "prepublish": "npm run lint && npm run clean && npm run build:umd"
-  },
-  "engines": {
-    "node": ">=0.8.22"
   },
   "licenses": [
     {

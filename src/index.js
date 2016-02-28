@@ -8,19 +8,6 @@ const {core: dscljs} = ds
 const {hashMap, vector, get, equals} = mori
 const {DB_AFTER, DB_BEFORE, TX_DATA, TX_META} = helpers
 
-function applyTx(db, tx) {
-  return dscljs.with$(db, ...tx)
-}
-
-function emptyDbReport(db) {
-  return hashMap(
-    DB_AFTER, db,
-    DB_BEFORE, db,
-    TX_DATA, vector(),
-    TX_META, `INITIAL`
-  )
-}
-
 export function nextTx(tx$, ...tx) {
   tx$.next(tx)
 }
@@ -31,8 +18,13 @@ export function createTxStream() {
 
 export function createReportStream(db, tx$) {
   return tx$.scan(
-    (report, tx) => applyTx(get(report, DB_AFTER), tx),
-    emptyDbReport(db)
+    (report, tx) => dscljs.with$(get(report, DB_AFTER), ...tx),
+    hashMap(
+      DB_AFTER, db,
+      DB_BEFORE, db,
+      TX_DATA, vector(),
+      TX_META, `INITIAL`
+    )
   )
 }
 
