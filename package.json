@@ -1,6 +1,6 @@
 {
   "name": "rx-datascript",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Bridge between rx and datascript",
   "main": "lib/index.js",
   "files": [
@@ -21,9 +21,9 @@
     "url": "http://github.com/typeetfunc/rx-datascript"
   },
   "keywords": [
-      "rx",
-      "datascript",
-      "mori"
+    "rx",
+    "datascript",
+    "mori"
   ],
   "author": "Andrei Melnikov <parabellum06-94@yandex.ru>",
   "bugs": {
