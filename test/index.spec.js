@@ -12,12 +12,15 @@ const response$ = q$(
   report$,
   parse(`[:find ?n ?a :where [?e "name" ?n] [?e "age" ?a]]`)
 )
+const responseFromBind$ = report$::q$(parse(`[:find ?n ?a :where [?e "name" ?n] [?e "age" ?a]]`))
 
 var reportList = [],
-  responseList = [];
+  responseList = [],
+  responseFromBindList = [];
 
 report$.subscribe(val => reportList.push(val))
-response$.subscribe(val => responseList.push(val));
+response$.subscribe(val => responseList.push(val))
+responseFromBind$.subscribe(val => responseFromBindList.push(val))
 
 nextTx(tx$, vector(
   vector(DB_ADD, 1, "name", "Ivan"),
@@ -58,3 +61,13 @@ describe('query stream', () => {
     );
   });
 });
+
+
+describe('call as function and call with bind operator is equals', () => {
+  it('all query stream equals', () => {
+    const isListEquals = responseList
+      .map((val, i) => equals(val, responseFromBindList[i]))
+      .reduce((acc, val) => val ? acc : false, true);
+    assert(isListEquals, 'responseList equals responseFromBindList')
+  })
+})

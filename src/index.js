@@ -36,7 +36,7 @@ function connect(db) {
 }
 
 function createAnyQueryStream(queryFunc) {
-  return (...args) => {
+  return function wrapper(...args) {
     const [reportOrDb$, ...rest] = this && this[$$observable] ?
       [this, ...args] :
       args
