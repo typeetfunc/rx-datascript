@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "description": "Bridge between rx and datascript",
   "main": "lib/index.js",
+  "files": [
+    "lib",
+    "dist"
+  ],
   "scripts": {
     "clean": "rimraf lib dist",
     "build": "babel src --out-dir lib",
@@ -21,21 +25,22 @@
       "datascript",
       "mori"
   ],
-  "author": "Andrei Melnikov <parabellum06-94@yandex.ru>",  
+  "author": "Andrei Melnikov <parabellum06-94@yandex.ru>",
   "bugs": {
     "mail": "parabellum06-94@yandex.ru",
     "url": "http://github.com/typeetfunc/rx-datascript/issues"
   },
   "dependencies": {
-    "rxjs": "~5.0.0-beta.1",
-    "datascript-mori": "0.15.7"
+    "rxjs": "5.0.0-beta.3",
+    "datascript-mori": "0.15.8"
   },
   "devDependencies": {
     "eslint-config-cycle": "~3.1.0",
-    "babel-preset-es2015": "^6.5.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-preset-stage-1": "^6.5.0",
-    "babel-preset-stage-2": "^6.5.0",
+    "babel-preset-es2015": "6.5.0",
+    "babel-preset-stage-0": "6.5.0",
+    "babel-preset-stage-1": "6.5.0",
+    "babel-preset-stage-2": "6.5.0",
+    "babel-plugin-transform-function-bind": "6.5.2",
     "babel-core": "~6.5.0",
     "babel-eslint": "~v5.0.0",
     "babel-loader": "~6.2.0",

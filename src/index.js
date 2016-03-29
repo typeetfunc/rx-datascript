@@ -1,5 +1,6 @@
 import {datascript as ds, mori, helpers} from 'datascript-mori'
 import {Subject} from 'rxjs/Subject'
+import {$$observable} from 'rxjs/symbol/observable'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/distinctUntilChanged'
@@ -8,16 +9,17 @@ const {core: dscljs} = ds
 const {hashMap, vector, get, equals} = mori
 const {DB_AFTER, DB_BEFORE, TX_DATA, TX_META} = helpers
 
-export function nextTx(tx$, ...tx) {
+function nextTx(tx$, ...tx) {
   tx$.next(tx)
 }
 
-export function createTxStream() {
+function createTxStream() {
   return new Subject()
 }
 
-export function createReportStream(db, tx$) {
-  return tx$.scan(
+function connect(db) {
+  const tx$ = createTxStream()
+  const report$ = tx$.scan(
     (report, tx) => dscljs.with$(get(report, DB_AFTER), ...tx),
     hashMap(
       DB_AFTER, db,
@@ -26,68 +28,78 @@ export function createReportStream(db, tx$) {
       TX_META, `INITIAL`
     )
   )
+
+  return {
+    report$,
+    tx$,
+  }
 }
 
-export function createAnyQueryStream(reportOrDb$, queryFunc) {
-  return reportOrDb$
-    .map(reportOrDb => queryFunc(
-      dscljs.db_QMARK_(reportOrDb) ? reportOrDb : get(reportOrDb, DB_AFTER)
-    ))
-    .distinctUntilChanged(equals)
+function createAnyQueryStream(queryFunc) {
+  return function wrapper(...args) {
+    const [reportOrDb$, ...rest] = this && this[$$observable] ?
+      [this, ...args] :
+      args
+    return reportOrDb$
+      .map(reportOrDb => queryFunc(
+        dscljs.db_QMARK_(reportOrDb) ? reportOrDb : get(reportOrDb, DB_AFTER),
+        ...rest
+      ))
+      .distinctUntilChanged(equals)
+  }
 }
 
-export function createQueryStream(reportOrDb$, query, ...sources) {
-  return createAnyQueryStream(
-    reportOrDb$,
-    db => dscljs.q(query, db, ...sources)
-  )
-}
+const q$ = createAnyQueryStream(
+  function q(db, query, ...sources) {
+    return dscljs.q(query, db, ...sources)
+  }
+)
+const entity$ = createAnyQueryStream(
+  function entity(db, eid) {
+    return dscljs.entity(db, eid)
+  }
+)
+const filter$ = createAnyQueryStream(
+  function filter(db, filterFunc) {
+    return dscljs.filter(db, filterFunc)
+  }
+)
+const pull$ = createAnyQueryStream(
+  function pull(db, selector, eid) {
+    return dscljs.pull(db, selector, eid)
+  }
+)
+const pullMany$ = createAnyQueryStream(
+  function pullMany(db, selector, eids) {
+    return dscljs.pull_many(db, selector, eids)
+  }
+)
+const datoms$ = createAnyQueryStream(
+  function datoms(db, ...args) {
+    return dscljs.datoms(db, ...args)
+  }
+)
+const seekDatoms$ = createAnyQueryStream(
+  function seekDatoms(db, ...args) {
+    return dscljs.seek_datoms(db, ...args)
+  }
+)
+const indexRange$ = createAnyQueryStream(
+  function indexRange(db, ...args) {
+    return dscljs.index_range(db, ...args)
+  }
+)
 
-export function createEntityStream(reportOrDb$, eid) {
-  return createAnyQueryStream(
-    reportOrDb$,
-    db => dscljs.entity(db, eid)
-  )
-}
-
-export function createPullStream(reportOrDb$, selector, eid) {
-  return createAnyQueryStream(
-    reportOrDb$,
-    db => dscljs.pull(db, selector, eid)
-  )
-}
-
-export function createPullManyStream(reportOrDb$, selector, eids) {
-  return createAnyQueryStream(
-    reportOrDb$,
-    db => dscljs.pull_many(db, selector, eids)
-  )
-}
-
-export function createFilterStream(reportOrDb$, filterFunc) {
-  return createAnyQueryStream(
-    reportOrDb$,
-    db => dscljs.filter(db, filterFunc)
-  )
-}
-
-export function createDatomsStream(reportOrDb$, ...args) {
-  return createAnyQueryStream(
-    reportOrDb$,
-    db => dscljs.datoms(db, ...args)
-  )
-}
-
-export function createSeekDatomsStream(reportOrDb$, ...args) {
-  return createAnyQueryStream(
-    reportOrDb$,
-    db => dscljs.seek_datoms(db, ...args)
-  )
-}
-
-export function createIndexRangeStream(reportOrDb$, ...args) {
-  return createAnyQueryStream(
-    reportOrDb$,
-    db => dscljs.index_range(db, ...args)
-  )
+export {
+  createAnyQueryStream,
+  connect,
+  nextTx,
+  q$,
+  entity$,
+  filter$,
+  pull$,
+  pullMany$,
+  datoms$,
+  seekDatoms$,
+  indexRange$,
 }

@@ -1,21 +1,26 @@
-import chai from 'chai';
-import { datascript as ds, mori, helpers } from 'datascript-mori';
-import { createTxStream, createReportStream, createQueryStream, nextTx } from '../src/index';
+import chai from 'chai'
+import {datascript as ds, mori, helpers} from 'datascript-mori'
+import {connect, nextTx, q$} from '../src/index'
 
-const { expect, assert } = chai,
-  { DB_ID, DB_ADD, TX_DATA, TX_META, DB_AFTER, DB_BEFORE } = helpers,
-  { hashMap, vector, parse, toJs, equals, isMap, hasKey, isSet, set } = mori;
+const {expect, assert} = chai
+const {DB_ID, DB_ADD, TX_DATA, TX_META, DB_AFTER, DB_BEFORE} = helpers
+const {hashMap, vector, parse, toJs, equals, isMap, hasKey, isSet, set} = mori
 
-const tx$ = createTxStream(),
-  db = ds.js.empty_db(),
-  report$ = createReportStream(db, tx$),
-  response$ = createQueryStream(report$, parse('[:find ?n ?a :where [?e "name" ?n] [?e "age" ?a]]'));
+const db = ds.js.empty_db()
+const {report$, tx$} = connect(db)
+const response$ = q$(
+  report$,
+  parse(`[:find ?n ?a :where [?e "name" ?n] [?e "age" ?a]]`)
+)
+const responseFromBind$ = report$::q$(parse(`[:find ?n ?a :where [?e "name" ?n] [?e "age" ?a]]`))
 
 var reportList = [],
-  responseList = [];
+  responseList = [],
+  responseFromBindList = [];
 
 report$.subscribe(val => reportList.push(val))
-response$.subscribe(val => responseList.push(val));
+response$.subscribe(val => responseList.push(val))
+responseFromBind$.subscribe(val => responseFromBindList.push(val))
 
 nextTx(tx$, vector(
   vector(DB_ADD, 1, "name", "Ivan"),
@@ -56,3 +61,13 @@ describe('query stream', () => {
     );
   });
 });
+
+
+describe('call as function and call with bind operator is equals', () => {
+  it('all query stream equals', () => {
+    const isListEquals = responseList
+      .map((val, i) => equals(val, responseFromBindList[i]))
+      .reduce((acc, val) => val ? acc : false, true);
+    assert(isListEquals, 'responseList equals responseFromBindList')
+  })
+})
