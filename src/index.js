@@ -35,7 +35,7 @@ function connect(db) {
   }
 }
 
-function createAnyQueryStream(queryFunc) {
+function createAnyQueryStream(queryFunc, distinctUntilChangedFunc = equals) {
   return function wrapper(...args) {
     const [reportOrDb$, ...rest] = this && this[$$observable] ?
       [this, ...args] :
@@ -45,7 +45,7 @@ function createAnyQueryStream(queryFunc) {
         dscljs.db_QMARK_(reportOrDb) ? reportOrDb : get(reportOrDb, DB_AFTER),
         ...rest
       ))
-      .distinctUntilChanged(equals)
+      .distinctUntilChanged(distinctUntilChangedFunc)
   }
 }
 
@@ -57,7 +57,8 @@ const q$ = createAnyQueryStream(
 const entity$ = createAnyQueryStream(
   function entity(db, eid) {
     return dscljs.entity(db, eid)
-  }
+  },
+  () => false
 )
 const filter$ = createAnyQueryStream(
   function filter(db, filterFunc) {

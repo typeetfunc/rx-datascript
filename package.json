@@ -13,7 +13,7 @@
     "build:umd": "webpack src/index.js dist/rx-datascript.js && NODE_ENV=production webpack src/index.js dist/rx-datascript.min.js",
     "lint": "eslint src",
     "test": "mocha --compilers js:babel-register",
-    "test:watch": "NODE_ENV=test mocha --watch",
+    "test:watch": "NODE_ENV=test mocha --compilers js:babel-register --watch",
     "prepublish": "npm run lint && npm run test && npm run clean && npm run build && npm run build:umd"
   },
   "repository": {
