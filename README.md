@@ -62,5 +62,24 @@ nextTx(tx$, vector(
 */
 ```
 ### API
+ - `createAnyQueryStream(queryFunc: Function, distinctUntilChangedFunc: Function): Function`: Basic high order function for wrapping any query function in stream. Second optional argument is function that compare results of query.
+ - `connect(db: DataScript DB): {report$: Observable<Report>, tx$: Observable<tx>}`: Function for creating observable of report and tx from DataScript DB.
+ - `nextTx(tx$: Observable<tx>, ...tx: Array<tx>)`: Apply array of tx to stream of tx.
+
+###### Reactive analogues DataScript API
+ - `q$`
+ - `entity$`
+ - `filter$`
+ - `pull$`
+ - `pullMany$`
+ - `datoms$`
+ - `seekDatoms$`
+ - `indexRange$`
+All functions takes the first argument observable of reports. Also you can pass observable of reports in `this` with using bind operator - `report$::q$(...)`. Rest arguments is equals list of arguments in original function(see [DataScript Docs](https://github.com/tonsky/datascript/wiki/API-overview))
 
 ### Why?
+
+DataScript transaction API based on callbacks. Callbacks is a bad, because using callbacks, you can not work with events as [first-class citizen value](https://en.wikipedia.org/wiki/First-class_citizen).  Reactive streams allow the manipulate events as first-class citizen values and [provide many operators](http://reactivex.io/documentation/operators.html) for proccessing event streams.
+
+### Roadmap
+ - Interoperability with other streaming libs(Most, Kefir, etc.)
