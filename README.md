@@ -75,6 +75,7 @@ nextTx(tx$, vector(
  - `datoms$`
  - `seekDatoms$`
  - `indexRange$`
+
 All functions takes the first argument observable of reports. Also you can pass observable of reports in `this` with using bind operator - `report$::q$(...)`. Rest arguments is equals list of arguments in original function(see [DataScript Docs](https://github.com/tonsky/datascript/wiki/API-overview))
 
 ### Why?
