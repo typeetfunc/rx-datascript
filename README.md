@@ -63,8 +63,8 @@ nextTx(tx$, vector(
 ```
 ### API
  - `createAnyQueryStream(queryFunc: Function, distinctUntilChangedFunc: Function): Function`: Basic high order function for wrapping any query function in stream. Second optional argument is function that compare results of query.
- - `connect(db: DataScript DB): {report$: Observable<Report>, tx$: Observable<tx>}: Function` for creating observable of report and tx from DataScript DB.
- - `nextTx(tx$: Observable<tx>, ...tx: Array<tx>)`: Apply array of tx to stream of tx.
+ - `connect(db: DataScript DB): {report$: Observable<Report>, tx$: Observable<tx>}`: Function for creating observable of report and tx from DataScript DB.
+ - `nextTx(tx$: Observable<tx>, ...tx: Array<tx>):Void`: Function for applying array of transactions to stream of tx.
 
 ###### Reactive analogues DataScript API
  - `q$`
