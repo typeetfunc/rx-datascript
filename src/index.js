@@ -1,7 +1,8 @@
 import {datascript as ds, mori, helpers} from 'datascript-mori'
-import {Subject} from 'rxjs/Subject'
+import {BehaviorSubject} from 'rxjs/BehaviorSubject'
 import {$$observable} from 'rxjs/symbol/observable'
 import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/skip'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/distinctUntilChanged'
 
@@ -14,12 +15,13 @@ function nextTx(tx$, ...tx) {
 }
 
 function createTxStream() {
-  return new Subject()
+  return new BehaviorSubject().skip(1)
 }
 
 function connect(db) {
   const tx$ = createTxStream()
-  const report$ = tx$.scan(
+  const report$ = tx$
+    .scan(
     (report, tx) => dscljs.with$(get(report, DB_AFTER), ...tx),
     hashMap(
       DB_AFTER, db,

@@ -31,7 +31,7 @@
     "url": "http://github.com/typeetfunc/rx-datascript/issues"
   },
   "dependencies": {
-    "rxjs": "5.0.0-beta.3",
+    "rxjs": "5.0.0-beta.6",
     "datascript-mori": "0.15.8"
   },
   "devDependencies": {
